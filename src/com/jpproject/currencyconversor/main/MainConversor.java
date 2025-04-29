@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class MainConversor {
     public static void main(String[] args) {
         String apiKey = "8c35ce5732bb89a2969c9b16";
-        String url = "https://v6.exchangerate-api.com/v6/"+apiKey+"/latest/USD";
+        String url = "https://v6.exchangerate-api.com/v6/"+apiKey+"/latest/";
         Scanner sc = new Scanner(System.in);
         int opcion;
         String menu = """
@@ -35,44 +35,43 @@ public class MainConversor {
                 Ingrese la cantidad a convertir:
                 """;
         HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest
-                .newBuilder()
-                .uri(URI.create(url))
-                .build();
         Gson gson = new GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CASE_WITH_UNDERSCORES)
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
 
         do {
             System.out.println(menu);
             opcion = Integer.parseInt(sc.nextLine());
-
+            System.out.println(subMenu);
+            double value = Double.parseDouble(sc.nextLine());
+            double conversion;
+            String currencyCode;
+            ExchangeRateResponse exchangeRateResponse;
             try {
                 switch (opcion) {
-                    case 1:
-                        System.out.println(subMenu);
-                        double value = Double.parseDouble(sc.nextLine());
-                        HttpResponse<String> response = client
-                                .send(request, HttpResponse.BodyHandlers.ofString());
-                        String json = response.body();
-                        ExchangeRateResponse exchangeRateResponse = gson.fromJson(json, ExchangeRateResponse.class);
-                        Double conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse);
+                    case 1, 3, 5:
+                        currencyCode = "USD";
+                        exchangeRateResponse = sendRequest(gson, currencyCode, client, url);
+                        conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse, value);
                         System.out.println("El valor de conversión de " + value + " dolares en pesos argentinos es: " + conversion + " pesos argentinos");
                         break;
                     case 2:
-
-                        break;
-                    case 3:
-
+                        currencyCode = "ARS";
+                        exchangeRateResponse = sendRequest(gson, currencyCode, client, url);
+                        conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse, value);
+                        System.out.println("El valor de conversión de " + value + " dolares en pesos argentinos es: " + conversion + " pesos argentinos");
                         break;
                     case 4:
-
-                        break;
-                    case 5:
-
+                        currencyCode = "BRL";
+                        exchangeRateResponse = sendRequest(gson, currencyCode, client, url);
+                        conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse, value);
+                        System.out.println("El valor de conversión de " + value + " dolares en pesos argentinos es: " + conversion + " pesos argentinos");
                         break;
                     case 6:
-
+                        currencyCode = "COP";
+                        exchangeRateResponse = sendRequest(gson, currencyCode, client, url);
+                        conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse, value);
+                        System.out.println("El valor de conversión de " + value + " dolares en pesos argentinos es: " + conversion + " pesos argentinos");
                         break;
                     case 7:
                         System.out.println("Saliendo del conversor");
@@ -80,12 +79,26 @@ public class MainConversor {
                     default:
                         System.out.println("Ingrese una opción valida");
                 }
-
-            }catch (IOException | InterruptedException e){
+            }catch (IOException e){
                 System.out.println("Error al enviar la petición");
             }
 
 
         }while (opcion != 7);
+    }
+
+    public static ExchangeRateResponse sendRequest(Gson gson, String currencyCode, HttpClient client, String url) throws IOException {
+        try {
+            HttpRequest request = HttpRequest
+                    .newBuilder()
+                    .uri(URI.create(url+currencyCode))
+                    .build();
+            HttpResponse<String> response = client
+                    .send(request, HttpResponse.BodyHandlers.ofString());
+            String json = response.body();
+            return gson.fromJson(json, ExchangeRateResponse.class);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
