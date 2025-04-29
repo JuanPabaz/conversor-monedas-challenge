@@ -1,4 +1,9 @@
 package com.jpproject.currencyconversor.models;
 
-public record ExchangeRateResponse(double usd, double cop, double ars, double brl) {
-}
+import java.util.Map;
+
+public record ExchangeRateResponse(
+        String result,
+        String baseCode,
+        Map<String, Double> conversionRates
+) {}
