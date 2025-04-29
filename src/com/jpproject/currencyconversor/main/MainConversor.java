@@ -48,8 +48,7 @@ public class MainConversor {
         do {
             System.out.println(menu);
             opcion = Integer.parseInt(sc.nextLine());
-            System.out.println(subMenu);
-            double value = Double.parseDouble(sc.nextLine());
+            double value;
             Double conversion;
             String currencyCode;
             ExchangeRateResponse exchangeRateResponse;
@@ -57,6 +56,8 @@ public class MainConversor {
             try {
                 switch (opcion) {
                     case 1, 3, 5:
+                        System.out.println(subMenu);
+                        value = Double.parseDouble(sc.nextLine());
                         currencyCode = "USD";
                         exchangeRateResponse = sendRequest(gson, currencyCode, client, url);
                         conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse, value);
@@ -77,6 +78,8 @@ public class MainConversor {
                         System.out.println("El valor de conversión de " + value + " dolares a "+ convertedCurrency + " es: " + formatted + " " + convertedCurrency);
                         break;
                     case 2:
+                        System.out.println(subMenu);
+                        value = Double.parseDouble(sc.nextLine());
                         currencyCode = "ARS";
                         exchangeRateResponse = sendRequest(gson, currencyCode, client, url);
                         conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse, value);
@@ -85,6 +88,8 @@ public class MainConversor {
                         System.out.println("El valor de conversión de " + value + " pesos argentinos a dolares es: " + formatted + " pesos argentinos");
                         break;
                     case 4:
+                        System.out.println(subMenu);
+                        value = Double.parseDouble(sc.nextLine());
                         currencyCode = "BRL";
                         exchangeRateResponse = sendRequest(gson, currencyCode, client, url);
                         conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse, value);
@@ -93,6 +98,8 @@ public class MainConversor {
                         System.out.println("El valor de conversión de " + value + " reales brasileños a dolares es: " + formatted + " pesos argentinos");
                         break;
                     case 6:
+                        System.out.println(subMenu);
+                        value = Double.parseDouble(sc.nextLine());
                         currencyCode = "COP";
                         exchangeRateResponse = sendRequest(gson, currencyCode, client, url);
                         conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse, value);
@@ -101,7 +108,11 @@ public class MainConversor {
                         System.out.println("El valor de conversión de " + value + " pesos colombianos a dolares es: " + formatted + " pesos argentinos");
                         break;
                     case 7:
-
+                        if (convertedCurrencies.isEmpty()) {
+                            System.out.println("No se han generado conversiones");
+                        }else {
+                            System.out.println(convertedCurrencies);
+                        }
                         break;
                     case 8:
                         System.out.println("Saliendo del conversor");
