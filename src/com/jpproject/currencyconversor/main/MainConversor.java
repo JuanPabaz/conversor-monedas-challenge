@@ -3,6 +3,7 @@ package com.jpproject.currencyconversor.main;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.jpproject.currencyconversor.calculations.MoneyConversion;
 import com.jpproject.currencyconversor.models.ExchangeRateResponse;
 
 import java.io.IOException;
@@ -30,6 +31,9 @@ public class MainConversor {
                 7) Salir
                 Elija una opción valida:
                 """;
+        String subMenu = """
+                Ingrese la cantidad a convertir:
+                """;
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest
                 .newBuilder()
@@ -46,10 +50,14 @@ public class MainConversor {
             try {
                 switch (opcion) {
                     case 1:
+                        System.out.println(subMenu);
+                        double value = Double.parseDouble(sc.nextLine());
                         HttpResponse<String> response = client
                                 .send(request, HttpResponse.BodyHandlers.ofString());
                         String json = response.body();
                         ExchangeRateResponse exchangeRateResponse = gson.fromJson(json, ExchangeRateResponse.class);
+                        Double conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse);
+                        System.out.println("El valor de conversión de " + value + " dolares en pesos argentinos es: " + conversion + " pesos argentinos");
                         break;
                     case 2:
 
