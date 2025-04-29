@@ -1,11 +1,21 @@
 package com.jpproject.currencyconversor.main;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.jpproject.currencyconversor.models.ExchangeRateResponse;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Scanner;
 
 public class MainConversor {
     public static void main(String[] args) {
         String apiKey = "8c35ce5732bb89a2969c9b16";
-        String url = "https://v6.exchangerate-api.com/v6/"+apiKey+"/latest";
+        String url = "https://v6.exchangerate-api.com/v6/"+apiKey+"/latest/USD";
         Scanner sc = new Scanner(System.in);
         int opcion;
         String menu = """
@@ -20,35 +30,53 @@ public class MainConversor {
                 7) Salir
                 Elija una opción valida:
                 """;
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .uri(URI.create(url))
+                .build();
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.UPPER_CASE_WITH_UNDERSCORES)
+                .create();
+
         do {
             System.out.println(menu);
             opcion = Integer.parseInt(sc.nextLine());
 
-            switch (opcion) {
-                case 1:
+            try {
+                switch (opcion) {
+                    case 1:
+                        HttpResponse<String> response = client
+                                .send(request, HttpResponse.BodyHandlers.ofString());
+                        String json = response.body();
+                        ExchangeRateResponse exchangeRateResponse = gson.fromJson(json, ExchangeRateResponse.class);
+                        break;
+                    case 2:
 
-                    break;
-                case 2:
+                        break;
+                    case 3:
 
-                    break;
-                case 3:
+                        break;
+                    case 4:
 
-                    break;
-                case 4:
+                        break;
+                    case 5:
 
-                    break;
-                case 5:
+                        break;
+                    case 6:
 
-                    break;
-                case 6:
+                        break;
+                    case 7:
+                        System.out.println("Saliendo del conversor");
+                        break;
+                    default:
+                        System.out.println("Ingrese una opción valida");
+                }
 
-                    break;
-                case 7:
-                    System.out.println("Saliendo del conversor");
-                    break;
-                default:
-                    System.out.println("Ingrese una opción valida");
+            }catch (IOException | InterruptedException e){
+                System.out.println("Error al enviar la petición");
             }
+
 
         }while (opcion != 7);
     }
