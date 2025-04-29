@@ -44,34 +44,47 @@ public class MainConversor {
             opcion = Integer.parseInt(sc.nextLine());
             System.out.println(subMenu);
             double value = Double.parseDouble(sc.nextLine());
-            double conversion;
+            Double conversion;
             String currencyCode;
             ExchangeRateResponse exchangeRateResponse;
+            String formatted;
             try {
                 switch (opcion) {
                     case 1, 3, 5:
                         currencyCode = "USD";
                         exchangeRateResponse = sendRequest(gson, currencyCode, client, url);
                         conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse, value);
-                        System.out.println("El valor de conversión de " + value + " dolares en pesos argentinos es: " + conversion + " pesos argentinos");
+                        String convertedCurrency;
+                        if (opcion == 1){
+                            convertedCurrency = "pesos argentinos";
+                        }else if (opcion == 3){
+                            convertedCurrency = "reales brasileños";
+                        }else{
+                            convertedCurrency = "pesos colombianos";
+                        }
+                        formatted = String.format("%.2f", conversion);
+                        System.out.println("El valor de conversión de " + value + " dolares a "+ convertedCurrency + " es: " + formatted + " " + convertedCurrency);
                         break;
                     case 2:
                         currencyCode = "ARS";
                         exchangeRateResponse = sendRequest(gson, currencyCode, client, url);
                         conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse, value);
-                        System.out.println("El valor de conversión de " + value + " dolares en pesos argentinos es: " + conversion + " pesos argentinos");
+                        formatted = String.format("%.2f", conversion);
+                        System.out.println("El valor de conversión de " + value + " pesos argentinos a dolares es: " + formatted + " pesos argentinos");
                         break;
                     case 4:
                         currencyCode = "BRL";
                         exchangeRateResponse = sendRequest(gson, currencyCode, client, url);
                         conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse, value);
-                        System.out.println("El valor de conversión de " + value + " dolares en pesos argentinos es: " + conversion + " pesos argentinos");
+                        formatted = String.format("%.2f", conversion);
+                        System.out.println("El valor de conversión de " + value + " reales brasileños a dolares es: " + formatted + " pesos argentinos");
                         break;
                     case 6:
                         currencyCode = "COP";
                         exchangeRateResponse = sendRequest(gson, currencyCode, client, url);
                         conversion = MoneyConversion.convertCurrencies(opcion, exchangeRateResponse, value);
-                        System.out.println("El valor de conversión de " + value + " dolares en pesos argentinos es: " + conversion + " pesos argentinos");
+                        formatted = String.format("%.2f", conversion);
+                        System.out.println("El valor de conversión de " + value + " pesos colombianos a dolares es: " + formatted + " pesos argentinos");
                         break;
                     case 7:
                         System.out.println("Saliendo del conversor");
